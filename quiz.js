@@ -1,0 +1,79 @@
+const apiUrl = "https://opentdb.com/api.php?amount=10&category=18&difficulty=easy";
+
+
+const button = document.querySelector("#fetch")
+
+button.addEventListener("click", async e =>
+{ console.log("Click");
+
+const response = await fetch(apiUrl);
+console.log("2.got response:", response);
+
+const quizData = await response.json()
+console.log("3. got data", quizData);
+
+const questions = quizData.results;
+
+createQuestions(questions);
+})
+
+const createQuestions = (questions) => {
+    const questionContainer = document.querySelector('#questions');
+
+    questions.forEach(question => {
+        const questionElement = createQuestionsElement(question);
+        questionContainer.appendChild(questionElement);
+
+});
+
+}
+
+const createQuestionsElement = (question) => {
+const questionElement = document.createElement("div");
+questionElement.className= 'question';
+
+const questionHeading = document.createElement('h2');
+questionHeading.innerHTML = question.question;
+
+questionElement.appendChild(questionHeading); 
+
+let options = [...question.incorrect_answers, question.correct_answer];
+
+options.forEach(option =>{
+
+    const optionElement = createOptionElement(option, question.correct_answer);
+    questionElement.appendChild(optionElement);
+}
+
+
+
+)
+
+return questionElement;
+}
+
+
+const createOptionElement = (option, correct_answer) =>{
+const optionElement = document.createElement('div');
+optionElement.className = 'option';
+optionElement.innerHTML = option;
+
+optionElement.addEventListener("click", e => {
+
+console.log("Du valde: " + option);
+if (option == correct_answer){
+    optionElement.classList.add('correct_answer');
+
+}
+else{
+    optionElement.classList.add('incorrect_answer');
+
+}
+
+})
+
+
+return optionElement;
+
+
+}
